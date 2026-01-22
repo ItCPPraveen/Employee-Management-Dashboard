@@ -4,7 +4,16 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Run `npm run dev` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+## Admin credentials
+EMAIL = Admin@gmail.com 
+Password = AdminUser@1002
+
+## Employee credentials
+EMAIL = mhartste@company.com 
+Password = Michael!Hartstein201
+
 
 ## Code scaffolding
 
