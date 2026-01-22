@@ -8,7 +8,7 @@ import { AuthService } from './login/auth.service';
 })
 export class AdminAuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService){}
+  constructor(private authService: AuthService) { }
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -16,12 +16,12 @@ export class AdminAuthGuard implements CanActivate {
     const token = localStorage.getItem('token');
     const isLoggedIn = this.authService.isLoggedIn();
     const role = localStorage.getItem('role');
-    if(token && isLoggedIn && role == "manager"){
+    if (token && isLoggedIn && role == "admin") {
       return true;
     }
-    else{
+    else {
       return false;
     }
   }
-  
+
 }

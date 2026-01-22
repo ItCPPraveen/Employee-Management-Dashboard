@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { userData } from "./login/interface/login.interface"
-import { userSeedData } from './login/seedData/userSeed';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +9,7 @@ export class DataService {
 
   constructor() { }
 
-  // employee.service.ts
-  userData: userData = userSeedData;
-  private employeeSubject = new BehaviorSubject<userData>(this.userData);
+  private employeeSubject = new BehaviorSubject<userData>({} as userData);
   employees = this.employeeSubject.asObservable();
 
   fetchEmployees() {

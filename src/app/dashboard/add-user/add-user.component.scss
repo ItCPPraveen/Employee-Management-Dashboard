@@ -1,0 +1,16 @@
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  max-width: 600px;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+}
+
+mat-form-field {
+  flex: 1;
+}

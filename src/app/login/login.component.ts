@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AuthService } from './auth.service';
-import { DataService } from '../data.service';
-import { userData } from "./interface/login.interface"
-import { userSeedData } from './seedData/userSeed';
 import { SecurityService } from '../security.service';
 import { Router } from '@angular/router';
+import { FetchDataService } from '../fetch-data.service';
 
 @Component({
   selector: 'app-login',
@@ -19,9 +17,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private dataService: DataService,
     private securityService: SecurityService,
-    private router: Router
+    private router: Router,
+    private fetchDataService: FetchDataService,
   ) { }
 
   ngOnInit() {
@@ -35,7 +33,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // Custom validator defined inside the component
   passwordStrengthValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -70,33 +67,71 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('role')!;
   }
 
+
   onSubmit() {
     if (this.loginForm.valid) {
-      this.dataService.employees.subscribe((data: userData) => {
-        let userData: any = data;
-        if (!userData) {
-          localStorage.setItem("userData", JSON.stringify(userSeedData));
-          userData = userSeedData
-          this.dataService.fetchEmployees();
-        }
-        const userRole: string = this.loginForm.value.role
-        console.log('userData', this.securityService.encrypt(this.loginForm.value.password), "U2FsdGVkX18UljUutJ4wfhlxvj6tmcVs//1iRGJ+6fA=");
+      this.fetchDataService.getEmployees().subscribe({
+        next: (data) => {
+          let userData: any = data;
+          const authenticatedUser = userData.find((user: any) => {
+            return (
+              user.EMAIL === this.loginForm.value.email &&
+              user.ROLE === this.loginForm.value.role && // Good practice to check role during login
+              this.securityService.decrypt(user.PASSWORD) === this.loginForm.value.password
+            );
+          });
+          if (authenticatedUser) {
+            // SUCCESS
+            localStorage.setItem('role', authenticatedUser.ROLE);
+            const Token = this.authService.generateJwt();
+            localStorage.setItem('token', Token);
 
-        if (userData?.[userRole].email == this.loginForm.value.email &&
-          this.securityService.decrypt(userData?.[userRole].password) == this.loginForm.value.password) {
-          localStorage.setItem('role', this.loginForm.value.role)
-          const Token = this.authService.generateJwt();
-          localStorage.setItem('token', Token);
-          this.router.navigate(['/dashboard'])
-          return true;
+            this.router.navigate(['/dashboard']);
+          } else {
+            // FAILURE - Show your error here
+            alert('Invalid Credentials or Role Selection');
+          }
+          // let isValidUser = userData.map((userData: any) => {
+          //   if (userData.EMAIL == this.loginForm.value.email &&
+          //     this.securityService.decrypt(userData.PASSWORD) == this.loginForm.value.password) {
+          //     localStorage.setItem('role', this.loginForm.value.role)
+          //     const Token = this.authService.generateJwt();
+          //     localStorage.setItem('token', Token);
+          //     this.router.navigate(['/dashboard'])
+          //     return true;
+          //   }
+          //   return false;
+          // });
+          // console.log('isValidUser', isValidUser);
+
+          // alert('Invalid Credentials');
+        },
+        error: (err) => {
+          console.error('HTTP Error occurred:', err);
+        },
+        complete: () => {
+          console.log('HTTP Request completed');
         }
-        return false;
-      })
+      });
+      // this.dataService.employees.subscribe((data: userData) => {
+      //   let userData: any = data;
+      //   const userRole: string = this.loginForm.value.role
+      //   console.log('userData', this.securityService.encrypt(this.loginForm.value.password), "U2FsdGVkX18UljUutJ4wfhlxvj6tmcVs//1iRGJ+6fA=");
+
+      //   if (userData?.[userRole].email == this.loginForm.value.email &&
+      //     this.securityService.decrypt(userData?.[userRole].password) == this.loginForm.value.password) {
+      //     localStorage.setItem('role', this.loginForm.value.role)
+      //     const Token = this.authService.generateJwt();
+      //     localStorage.setItem('token', Token);
+      //     this.router.navigate(['/dashboard'])
+      //     return true;
+      //   }
+      //   return false;
+      // })
 
     }
     return false;
   }
-
 
 
 }

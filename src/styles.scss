@@ -5,3 +5,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .cursor-pointer{
     cursor: pointer;
 }
+
+.loader{
+    position: relative;
+    &::before{
+        background: url(./assets/loader/loader.svg);
+        position: absolute;
+        content: "";
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}

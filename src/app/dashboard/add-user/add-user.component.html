@@ -1,0 +1,51 @@
+
+<div>
+    <h2 class="text-center my-5">
+        Add User
+    </h2>
+    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="col-md-8 col-10 my-3 mx-auto employee-form">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="FIRST_NAME">
+        </mat-form-field>
+    
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="LAST_NAME">
+        </mat-form-field>
+      </div>
+    
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="EMAIL">
+          <mat-error *ngIf="employeeForm.get('EMAIL')?.hasError('email')">
+            Invalid email format
+          </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field appearance="outline">
+          <mat-label>Salary</mat-label>
+          <input matInput type="number" formControlName="SALARY">
+        </mat-form-field>
+      </div>
+    
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="ROLE">
+            <mat-option value="admin">Admin</mat-option>
+            <mat-option value="manager">Manager</mat-option>
+            <mat-option value="employee">Employee</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    
+      <div class="{{loader ? 'loader' : 'loader'}} mx-auto">
+          <button mat-raised-button color="primary" type="submit" [disabled]="employeeForm.invalid">
+            Update Employee
+          </button>
+      </div>
+    </form>
+</div>

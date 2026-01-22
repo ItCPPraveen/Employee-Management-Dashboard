@@ -4,7 +4,7 @@
             Employee Management
         </h2>
         <div>
-            <button mat-raised-button>
+            <button mat-raised-button *ngIf="authService.isLoggedIn()" (click)="logout()">
                 Log Out
             </button>
         </div>
